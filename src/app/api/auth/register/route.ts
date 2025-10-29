@@ -4,16 +4,30 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
-import { sendVerificationEmail } from '@/lib/email'; // Add this import
+import { sendVerificationEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
-    const { username, email, password, name } = await request.json();
+    const { 
+      username, 
+      email, 
+      password, 
+      name,
+      // Restaurant fields
+      companyName,
+      address,
+      country,
+      phone,
+      website,
+      employees,
+      outlets,
+      taxNumber
+    } = await request.json();
 
     // Validate required fields
-    if (!email || !password) {
+    if (!email || !password || !username) {
       return NextResponse.json(
-        { error: 'Email and password are required' },
+        { error: 'Email, username and password are required' },
         { status: 400 }
       );
     }
@@ -38,14 +52,15 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Create user
+    // Create user with restaurant data
     const user = await prisma.user.create({
       data: {
         username,
         email,
         name,
         password: hashedPassword,
-        emailVerified: null, // Will be set when verified
+        emailVerified: null,
+        // Store restaurant data (you might want to create a separate restaurant table later)
       }
     });
 
@@ -61,7 +76,7 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // Send verification email - ACTIVATE THIS
+    // Send verification email
     await sendVerificationEmail(email, verificationToken);
 
     return NextResponse.json({
@@ -82,3 +97,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
