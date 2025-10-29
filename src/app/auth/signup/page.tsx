@@ -11,7 +11,7 @@ export default function RestaurantSignUp() {
     country: '',
     phone: '',
     fullName: '',
-    email: '', // Add this line
+    email: '',
     username: '',
     password: '',
     website: '',
@@ -20,10 +20,47 @@ export default function RestaurantSignUp() {
     taxNumber: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Handle restaurant registration
-    console.log('Restaurant sign up:', formData);
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          name: formData.fullName,
+          companyName: formData.companyName,
+          address: formData.address,
+          country: formData.country,
+          phone: formData.phone,
+          website: formData.website,
+          employees: parseInt(formData.employees) || 0,
+          outlets: parseInt(formData.outlets) || 1,
+          taxNumber: formData.taxNumber
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('Registration successful! Please check your email for verification.');
+      } else {
+        alert(data.error || 'Registration failed');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      alert('An error occurred during registration');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,7 +132,7 @@ export default function RestaurantSignUp() {
             />
           </div>
 
-          {/* New Additional Fields */}
+          {/* Additional Business Fields */}
           <div>
             <label className="block text-sm font-medium text-gray-300">Company Website</label>
             <input
@@ -162,17 +199,17 @@ export default function RestaurantSignUp() {
           </div>
 
           <div>
-  <label className="block text-sm font-medium text-gray-300">Email Address *</label>
-  <input
-    type="email"
-    name="email"
-    required
-    value={formData.email}
-    onChange={handleChange}
-    className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-    placeholder="owner@your-restaurant.com"
-  />
-</div>
+            <label className="block text-sm font-medium text-gray-300">Email Address *</label>
+            <input
+              type="email"
+              name="email"
+              required
+              value={formData.email}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="owner@your-restaurant.com"
+            />
+          </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-300">Username *</label>
@@ -202,9 +239,10 @@ export default function RestaurantSignUp() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-md font-medium transition-colors"
+            disabled={isLoading}
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white py-3 px-4 rounded-md font-medium transition-colors"
           >
-            Create Restaurant Account
+            {isLoading ? 'Creating Account...' : 'Create Restaurant Account'}
           </button>
 
           <div className="text-center">
