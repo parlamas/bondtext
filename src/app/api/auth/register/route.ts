@@ -1,6 +1,47 @@
 // src/app/api/auth/register/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
+
+export async function POST(request: NextRequest) {
+  try {
+    const { username, email, password, name } = await request.json();
+
+    // Basic validation
+    if (!email || !password || !username) {
+      return NextResponse.json(
+        { error: 'Email, username and password are required' },
+        { status: 400 }
+      );
+    }
+
+    // Simulate success without database
+    console.log('Registration attempt:', { email, username });
+
+    return NextResponse.json({
+      message: 'Registration successful! (Database disabled for testing)',
+      user: { email, username, name }
+    });
+
+  } catch (error) {
+    console.error('Registration error:', error);
+    return NextResponse.json(
+      { error: 'Registration failed' },
+      { status: 500 }
+    );
+  }
+}
+
+
+
+
+
+
+
+
+{/*
+
+
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
@@ -8,12 +49,13 @@ import { sendVerificationEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
+    const body = await request.json();
     const { 
       username, 
       email, 
       password, 
       name,
-      // Restaurant fields
+      // Accept but ignore restaurant fields for now
       companyName,
       address,
       country,
@@ -22,7 +64,9 @@ export async function POST(request: NextRequest) {
       employees,
       outlets,
       taxNumber
-    } = await request.json();
+    } = body;
+
+    console.log('Registration attempt:', { username, email });
 
     // Validate required fields
     if (!email || !password || !username) {
@@ -52,15 +96,14 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Create user with restaurant data
+    // Create user (ignore restaurant fields for now)
     const user = await prisma.user.create({
       data: {
         username,
         email,
-        name,
+        name: name || '',
         password: hashedPassword,
         emailVerified: null,
-        // Store restaurant data (you might want to create a separate restaurant table later)
       }
     });
 
@@ -79,6 +122,8 @@ export async function POST(request: NextRequest) {
     // Send verification email
     await sendVerificationEmail(email, verificationToken);
 
+    console.log('User created successfully:', user.id);
+
     return NextResponse.json({
       message: 'User created successfully. Please check your email for verification.',
       user: {
@@ -92,9 +137,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Registration error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error: ' + (error as Error).message },
       { status: 500 }
     );
   }
 }
 
+*/}
