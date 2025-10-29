@@ -13,6 +13,10 @@ export default function RestaurantSignUp() {
     fullName: '',
     username: '',
     password: '',
+    website: '',
+    employees: '',
+    outlets: '',
+    taxNumber: ''
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -87,6 +91,58 @@ export default function RestaurantSignUp() {
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="+1 234 567 8900"
+            />
+          </div>
+
+          {/* New Additional Fields */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300">Company Website</label>
+            <input
+              type="url"
+              name="website"
+              value={formData.website}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="https://your-restaurant.com"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300">Number of Employees</label>
+            <input
+              type="number"
+              name="employees"
+              min="1"
+              value={formData.employees}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="e.g., 15"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300">Number of Outlets</label>
+            <input
+              type="number"
+              name="outlets"
+              min="1"
+              value={formData.outlets}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="e.g., 3"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300">Tax Identification Number *</label>
+            <input
+              type="text"
+              name="taxNumber"
+              required
+              value={formData.taxNumber}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Your business tax ID"
             />
           </div>
 
