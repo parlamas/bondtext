@@ -1,8 +1,10 @@
 // src/app/api/auth/register/route.ts
+
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+import { sendVerificationEmail } from '@/lib/email'; // Add this import
 
 export async function POST(request: NextRequest) {
   try {
@@ -43,7 +45,7 @@ export async function POST(request: NextRequest) {
         email,
         name,
         password: hashedPassword,
-        // Email verification will be handled separately
+        emailVerified: null, // Will be set when verified
       }
     });
 
@@ -59,8 +61,8 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // TODO: Send verification email
-    // await sendVerificationEmail(email, verificationToken);
+    // Send verification email - ACTIVATE THIS
+    await sendVerificationEmail(email, verificationToken);
 
     return NextResponse.json({
       message: 'User created successfully. Please check your email for verification.',
