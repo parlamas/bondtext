@@ -1,4 +1,6 @@
 // src/app/api/test-nextauth-email/route.ts
+
+// FIXED: src/app/api/test-nextauth-email/route.ts
 import { authOptions } from '@/lib/auth';
 
 export async function GET() {
@@ -13,10 +15,14 @@ export async function GET() {
       emailProvider: {
         type: emailProvider.type,
         name: emailProvider.name,
-        server: emailProvider.options.server,
+        server: {
+          host: emailProvider.options.server.host,
+          port: emailProvider.options.server.port,
+          // REMOVED: auth details for security
+          auth: '***' // Don't expose actual credentials
+        },
         from: emailProvider.options.from,
       },
-      // Test if we can send using the same config
       config: {
         host: process.env.EMAIL_SERVER_HOST,
         user: process.env.EMAIL_SERVER_USER,
@@ -27,3 +33,4 @@ export async function GET() {
     return Response.json({ error: error.message });
   }
 }
+
