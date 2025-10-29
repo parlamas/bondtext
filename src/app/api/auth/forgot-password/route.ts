@@ -1,7 +1,9 @@
 // src/app/api/auth/forgot-password/route.ts
+
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
+import { sendPasswordResetEmail } from '@/lib/email'; // Add this import
 
 export async function POST(request: NextRequest) {
   try {
@@ -44,8 +46,8 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // TODO: Send password reset email
-    // await sendPasswordResetEmail(email, resetToken);
+    // Send password reset email - ACTIVATE THIS
+    await sendPasswordResetEmail(email, resetToken);
 
     return NextResponse.json({
       message: 'If an account with that email exists, a password reset link has been sent.'
