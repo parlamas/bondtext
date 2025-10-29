@@ -2,7 +2,7 @@
 
 import type { Metadata } from 'next'
 import Providers from './providers'
-import Navbar from './components/Navbar'
+import NavBar from './components/NavBar'
 
 export const metadata: Metadata = {
   title: 'BondText',
@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-gray-900 text-white">
         <Providers>
-          <Navbar />
+          <NavBar />
           <main>{children}</main>
         </Providers>
       </body>
