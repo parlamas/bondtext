@@ -44,11 +44,12 @@ export default function NavBar() {
               </div>
             ) : (
               <Link 
-                href="/auth/signin"
-                className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm transition-colors"
-              >
-                Sign In
-              </Link>
+  href="/auth/signup"  // Changed from /auth/signin
+  className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm transition-colors"
+>
+  Restaurant Sign Up
+</Link>
+              
             )}
           </div>
         </div>

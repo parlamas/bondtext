@@ -1,31 +1,85 @@
 //src/app/auth/signin/page.tsx
 
 'use client';
-import { signIn } from 'next-auth/react';
+import { useState } from 'react';
+import Link from 'next/link';
 
-export default function SignIn() {
+export default function RestaurantSignIn() {
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // TODO: Handle restaurant sign in
+    console.log('Restaurant sign in:', formData);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      <div className="relative h-screen flex items-center justify-center">
-        <div className="absolute inset-0 bg-black opacity-50"></div>
-        <div className="relative text-center z-10 max-w-md w-full space-y-8">
+    <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center py-12">
+      <div className="max-w-md w-full space-y-8">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold">Restaurant Owner Sign In</h2>
+          <p className="text-gray-400 mt-2">Access your restaurant dashboard</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <h2 className="text-4xl font-bold mb-4">
-              Welcome Back
-            </h2>
-            <p className="text-gray-300">
-              Sign in to access your restaurant dashboard
+            <label className="block text-sm font-medium text-gray-300">Username</label>
+            <input
+              type="text"
+              name="username"
+              required
+              value={formData.username}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Your username"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300">Password</label>
+            <input
+              type="password"
+              name="password"
+              required
+              value={formData.password}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Your password"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <Link href="/auth/forgot-password" className="text-sm text-blue-400 hover:text-blue-300">
+              Forgot password?
+            </Link>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-md font-medium transition-colors"
+          >
+            Sign In to Dashboard
+          </button>
+
+          <div className="text-center">
+            <p className="text-gray-400">
+              Don't have an account?{' '}
+              <Link href="/auth/signup" className="text-blue-400 hover:text-blue-300">
+                Sign Up
+              </Link>
             </p>
           </div>
-          <div className="mt-8 space-y-6">
-            <button
-              onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
-              className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-lg font-semibold rounded-lg text-gray-900 bg-white hover:bg-gray-100 transition-colors"
-            >
-              Continue with Google
-            </button>
-          </div>
-        </div>
+        </form>
       </div>
     </div>
   );

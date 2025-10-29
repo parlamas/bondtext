@@ -1,0 +1,152 @@
+//src/app/auth/signup/page.tsx
+
+'use client';
+import { useState } from 'react';
+import Link from 'next/link';
+
+export default function RestaurantSignUp() {
+  const [formData, setFormData] = useState({
+    companyName: '',
+    address: '',
+    country: '',
+    phone: '',
+    fullName: '',
+    username: '',
+    password: '',
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // TODO: Handle restaurant registration
+    console.log('Restaurant sign up:', formData);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center py-12">
+      <div className="max-w-md w-full space-y-8">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold">Restaurant Owner Sign Up</h2>
+          <p className="text-gray-400 mt-2">Create your restaurant account</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Company Information */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300">Company Name *</label>
+            <input
+              type="text"
+              name="companyName"
+              required
+              value={formData.companyName}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Your restaurant name"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300">Full Address *</label>
+            <input
+              type="text"
+              name="address"
+              required
+              value={formData.address}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Street, City, State"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300">Country *</label>
+            <input
+              type="text"
+              name="country"
+              required
+              value={formData.country}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Country"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300">Phone Number *</label>
+            <input
+              type="tel"
+              name="phone"
+              required
+              value={formData.phone}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="+1 234 567 8900"
+            />
+          </div>
+
+          {/* Owner/Manager Information */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300">Full Name *</label>
+            <input
+              type="text"
+              name="fullName"
+              required
+              value={formData.fullName}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Owner/Manager full name"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300">Username *</label>
+            <input
+              type="text"
+              name="username"
+              required
+              value={formData.username}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Choose a username"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300">Password *</label>
+            <input
+              type="password"
+              name="password"
+              required
+              value={formData.password}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Create a password"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-md font-medium transition-colors"
+          >
+            Create Restaurant Account
+          </button>
+
+          <div className="text-center">
+            <p className="text-gray-400">
+              Already have an account?{' '}
+              <Link href="/auth/signin" className="text-blue-400 hover:text-blue-300">
+                Sign In
+              </Link>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
