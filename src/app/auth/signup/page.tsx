@@ -1,7 +1,5 @@
 //src/app/auth/signup/page.tsx
 
-
-
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
@@ -13,6 +11,7 @@ export default function RestaurantSignUp() {
     country: '',
     phone: '',
     fullName: '',
+    email: '', // Add this line
     username: '',
     password: '',
     website: '',
