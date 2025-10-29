@@ -1,12 +1,13 @@
 //src/app/layout.tsx
 
-import type { Metadata } from 'next';
-import Providers from './providers';
+import type { Metadata } from 'next'
+import Providers from './providers'
+import Navbar from './components/Navbar'
 
 export const metadata: Metadata = {
   title: 'BondText',
   description: 'Your restaurant ordering platform',
-};
+}
 
 export default function RootLayout({
   children,
@@ -15,12 +16,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className="bg-gray-900 text-white">
         <Providers>
-          {children}
+          <Navbar />
+          <main>{children}</main>
         </Providers>
       </body>
     </html>
-  );
+  )
 }
 
