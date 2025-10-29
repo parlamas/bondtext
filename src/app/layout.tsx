@@ -3,6 +3,7 @@
 import type { Metadata } from 'next'
 import Providers from './providers'
 import NavBar from './components/NavBar'
+import './globals.css'  // ← ADD THIS LINE
 
 export const metadata: Metadata = {
   title: 'BondText',
@@ -25,4 +26,5 @@ export default function RootLayout({
     </html>
   )
 }
+
 
