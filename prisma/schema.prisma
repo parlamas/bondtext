@@ -1,15 +1,15 @@
 // prisma/schema.prisma
 
-// prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
+// Keep ALL your existing models below - don't change them!
 model Account {
   id                String  @id @default(cuid())
   userId            String  @map("user_id")
@@ -68,7 +68,7 @@ model VerificationToken {
   token      String   @unique
   expires    DateTime
 
-  @@unique([identifier, token])
+  @@id([identifier, token])
   @@map("verification_tokens")
 }
 
@@ -77,7 +77,7 @@ model PasswordResetToken {
   token      String   @unique
   expires    DateTime
 
-  @@unique([identifier, token])
+  @@id([identifier, token])
   @@map("password_reset_tokens")
 }
 
@@ -180,3 +180,4 @@ enum OrderStatus {
   COMPLETED
   CANCELLED
 }
+
