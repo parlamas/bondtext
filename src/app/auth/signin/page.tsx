@@ -3,6 +3,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
+import { signIn } from 'next-auth/react';
 
 export default function RestaurantSignIn() {
   const [formData, setFormData] = useState({
@@ -10,11 +11,23 @@ export default function RestaurantSignIn() {
     password: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: Handle restaurant sign in
-    console.log('Restaurant sign in:', formData);
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  const result = await signIn('credentials', {
+    username: formData.username,
+    password: formData.password,
+    redirect: false,
+    callbackUrl: '/dashboard'
+  });
+
+  if (result?.ok) {
+    window.location.href = '/dashboard';
+  } else {
+    console.error('Sign in failed');
+  }
+};
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
