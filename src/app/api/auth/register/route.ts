@@ -90,11 +90,14 @@ export async function POST(request: NextRequest) {
     const verificationToken = crypto.randomBytes(32).toString('hex');
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-    // Store verification token in database
+// Store verification token in database
 try {
+  // Create a manual ID that matches Prisma's expected type
+  const tokenId = `vt_${crypto.randomBytes(16).toString('hex')}`;
+  
   await prisma.verificationToken.create({
     data: {
-      id: crypto.randomBytes(16).toString('hex'),  // Add manual ID
+      id: tokenId,
       identifier: email,
       token: verificationToken,
       expires,
