@@ -1,47 +1,6 @@
 // src/app/api/auth/register/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
-
-export async function POST(request: NextRequest) {
-  try {
-    const { username, email, password, name } = await request.json();
-
-    // Basic validation
-    if (!email || !password || !username) {
-      return NextResponse.json(
-        { error: 'Email, username and password are required' },
-        { status: 400 }
-      );
-    }
-
-    // Simulate success without database
-    console.log('Registration attempt:', { email, username });
-
-    return NextResponse.json({
-      message: 'Registration successful! (Database disabled for testing)',
-      user: { email, username, name }
-    });
-
-  } catch (error) {
-    console.error('Registration error:', error);
-    return NextResponse.json(
-      { error: 'Registration failed' },
-      { status: 500 }
-    );
-  }
-}
-
-
-
-
-
-
-
-
-{/*
-
-
-import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
@@ -111,16 +70,14 @@ export async function POST(request: NextRequest) {
     const verificationToken = crypto.randomBytes(32).toString('hex');
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
-    await prisma.verificationToken.create({
-      data: {
-        identifier: email,
-        token: verificationToken,
-        expires,
-      }
-    });
-
-    // Send verification email
-    await sendVerificationEmail(email, verificationToken);
+    // Send verification email with error handling
+try {
+  await sendVerificationEmail(email, verificationToken);
+  console.log('Verification email sent successfully');
+} catch (emailError) {
+  console.error('Failed to send verification email:', emailError);
+  // Don't fail the registration - user can request resend later
+}
 
     console.log('User created successfully:', user.id);
 
@@ -142,5 +99,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
-*/}

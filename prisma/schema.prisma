@@ -9,7 +9,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Keep ALL your existing models below - don't change them!
 model Account {
   id                String  @id @default(cuid())
   userId            String  @map("user_id")
@@ -64,20 +63,28 @@ model User {
 }
 
 model VerificationToken {
+  id         String   @id @default(cuid())
   identifier String
   token      String   @unique
   expires    DateTime
+  createdAt  DateTime @default(now())
 
-  @@id([identifier, token])
+  @@unique([identifier, token])
+  @@index([token])
+  @@index([expires])
   @@map("verification_tokens")
 }
 
 model PasswordResetToken {
+  id         String   @id @default(cuid())
   identifier String
   token      String   @unique
   expires    DateTime
+  createdAt  DateTime @default(now())
 
-  @@id([identifier, token])
+  @@unique([identifier, token])
+  @@index([token])
+  @@index([expires])
   @@map("password_reset_tokens")
 }
 
@@ -180,4 +187,3 @@ enum OrderStatus {
   COMPLETED
   CANCELLED
 }
-
