@@ -104,6 +104,12 @@ export async function POST(request: NextRequest) {
       console.error('❌ Failed to store verification token:', tokenError);
     }
 
+    // Verify the token was actually stored
+const storedToken = await prisma.verificationToken.findUnique({
+  where: { token: verificationToken }
+});
+console.log('🔍 Token verification - exists in DB:', !!storedToken);
+
     // Send verification email with COMPLETE error handling
     console.log('📧 Attempting to send verification email...');
     try {
