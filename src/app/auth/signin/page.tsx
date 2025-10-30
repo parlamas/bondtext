@@ -18,7 +18,6 @@ export default function RestaurantSignIn() {
     username: formData.username,
     password: formData.password,
     redirect: false,
-    callbackUrl: '/dashboard'
   });
 
   if (result?.ok) {
