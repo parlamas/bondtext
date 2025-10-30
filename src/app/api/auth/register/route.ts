@@ -8,15 +8,24 @@ import { sendVerificationEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
-    // DEBUG: Log environment variables
-    console.log('🔧 PRODUCTION ENV VARIABLES:', {
-      EMAIL_SERVER_HOST: process.env.EMAIL_SERVER_HOST,
-      EMAIL_SERVER_USER: process.env.EMAIL_SERVER_USER,
-      EMAIL_SERVER_PORT: process.env.EMAIL_SERVER_PORT,
-      HAS_EMAIL_PASSWORD: !!process.env.EMAIL_SERVER_PASSWORD,
-      EMAIL_FROM: process.env.EMAIL_FROM,
-      NEXTAUTH_URL: process.env.NEXTAUTH_URL
-    });
+    // ULTIMATE DEBUG: Check ALL environment variables and configurations
+    console.log('🚨 ULTIMATE DEBUG - CHECKING EVERYTHING:');
+    console.log('🔧 DATABASE_URL exists:', !!process.env.DATABASE_URL);
+    console.log('🔧 EMAIL_SERVER_HOST:', process.env.EMAIL_SERVER_HOST || '❌ MISSING');
+    console.log('🔧 EMAIL_SERVER_USER:', process.env.EMAIL_SERVER_USER || '❌ MISSING');
+    console.log('🔧 EMAIL_SERVER_PORT:', process.env.EMAIL_SERVER_PORT || '❌ MISSING');
+    console.log('🔧 EMAIL_SERVER_PASSWORD:', process.env.EMAIL_SERVER_PASSWORD ? '✅ SET' : '❌ MISSING');
+    console.log('🔧 EMAIL_FROM:', process.env.EMAIL_FROM || '❌ MISSING');
+    console.log('🔧 NEXTAUTH_URL:', process.env.NEXTAUTH_URL || '❌ MISSING');
+    console.log('🔧 NEXTAUTH_SECRET:', process.env.NEXTAUTH_SECRET ? '✅ SET' : '❌ MISSING');
+
+    // Test database connection
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+      console.log('✅ Database connection: SUCCESS');
+    } catch (dbError) {
+      console.log('❌ Database connection: FAILED', dbError);
+    }
 
     const body = await request.json();
     const { 
@@ -24,7 +33,6 @@ export async function POST(request: NextRequest) {
       email, 
       password, 
       name,
-      // Accept but ignore restaurant fields for now
       companyName,
       address,
       country,
@@ -35,7 +43,7 @@ export async function POST(request: NextRequest) {
       taxNumber
     } = body;
 
-    console.log('Registration attempt:', { username, email });
+    console.log('📝 Registration attempt:', { username, email });
 
     // Validate required fields
     if (!email || !password || !username) {
@@ -65,7 +73,7 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Create user (ignore restaurant fields for now)
+    // Create user
     const user = await prisma.user.create({
       data: {
         username,
@@ -76,20 +84,40 @@ export async function POST(request: NextRequest) {
       }
     });
 
+    console.log('✅ User created successfully:', user.id);
+
     // Generate verification token
     const verificationToken = crypto.randomBytes(32).toString('hex');
-    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-    // Send verification email with error handling
+    // Store verification token in database
     try {
-      await sendVerificationEmail(email, verificationToken);
-      console.log('Verification email sent successfully');
-    } catch (emailError) {
-      console.error('Failed to send verification email:', emailError);
-      // Don't fail the registration - user can request resend later
+      await prisma.verificationToken.create({
+        data: {
+          identifier: email,
+          token: verificationToken,
+          expires,
+        }
+      });
+      console.log('✅ Verification token stored in database');
+    } catch (tokenError) {
+      console.error('❌ Failed to store verification token:', tokenError);
     }
 
-    console.log('User created successfully:', user.id);
+    // Send verification email with COMPLETE error handling
+    console.log('📧 Attempting to send verification email...');
+    try {
+      await sendVerificationEmail(email, verificationToken);
+      console.log('✅ Verification email sent successfully');
+    } catch (emailError) {
+      console.error('❌ FAILED to send verification email:', emailError);
+      console.error('🔧 Email error details:', {
+        name: emailError.name,
+        message: emailError.message,
+        code: emailError.code,
+        stack: emailError.stack
+      });
+    }
 
     return NextResponse.json({
       message: 'User created successfully. Please check your email for verification.',
@@ -102,7 +130,12 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('💥 REGISTRATION FAILED:', error);
+    console.error('🔧 Error details:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack
+    });
     return NextResponse.json(
       { error: 'Internal server error: ' + (error as Error).message },
       { status: 500 }
