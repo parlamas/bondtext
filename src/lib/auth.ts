@@ -9,6 +9,10 @@ import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
+  session: {
+    strategy: 'jwt',
+  },
+  debug: process.env.NODE_ENV === 'development',
   providers: [
     // Email provider for email verification
     EmailProvider({
@@ -56,29 +60,35 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        // Return simpler user object
         return {
           id: user.id,
           email: user.email,
-          username: user.username,
-          role: user.role,
+          name: user.name || user.username,
         };
       }
     })
   ],
   callbacks: {
-    async session({ session, user, token }) {
-  if (session.user) {
-    session.user.id = user?.id || (token.id as string);
-    
-    const dbUser = await prisma.user.findUnique({
-      where: { id: user?.id || (token.id as string) },
-      select: { role: true }
-    });
-    
-    session.user.role = dbUser?.role || 'CUSTOMER';
-  }
-  return session;
-},
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+        
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { role: true }
+        });
+        
+        session.user.role = dbUser?.role || 'CUSTOMER';
+      }
+      return session;
+    },
     async signIn({ user, account, profile }) {
       return true;
     },
@@ -88,4 +98,3 @@ export const authOptions: NextAuthOptions = {
     verifyRequest: '/auth/verify-request',
   },
 };
-
