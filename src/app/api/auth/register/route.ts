@@ -91,18 +91,19 @@ export async function POST(request: NextRequest) {
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
     // Store verification token in database
-    try {
-      await prisma.verificationToken.create({
-        data: {
-          identifier: email,
-          token: verificationToken,
-          expires,
-        }
-      });
-      console.log('✅ Verification token stored in database');
-    } catch (tokenError) {
-      console.error('❌ Failed to store verification token:', tokenError);
+try {
+  await prisma.verificationToken.create({
+    data: {
+      id: crypto.randomBytes(16).toString('hex'),  // Add manual ID
+      identifier: email,
+      token: verificationToken,
+      expires,
     }
+  });
+  console.log('✅ Verification token stored in database');
+} catch (tokenError) {
+  console.error('❌ Failed to store verification token:', tokenError);
+}
 
     // Verify the token was actually stored
 const storedToken = await prisma.verificationToken.findUnique({
