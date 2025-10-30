@@ -60,11 +60,13 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        // Return simpler user object
+        // Return user with all required fields
         return {
           id: user.id,
           email: user.email,
           name: user.name || user.username,
+          role: user.role,
+          image: user.image,
         };
       }
     })
@@ -73,19 +75,14 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.role = user.role;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
-        
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
-          select: { role: true }
-        });
-        
-        session.user.role = dbUser?.role || 'CUSTOMER';
+        session.user.role = token.role as string;
       }
       return session;
     },
