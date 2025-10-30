@@ -67,18 +67,18 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async session({ session, user, token }) {
-      if (session.user) {
-        session.user.id = user?.id || token.id;
-        
-        const dbUser = await prisma.user.findUnique({
-          where: { id: user?.id || token.id },
-          select: { role: true }
-        });
-        
-        session.user.role = dbUser?.role || 'CUSTOMER';
-      }
-      return session;
-    },
+  if (session.user) {
+    session.user.id = user?.id || (token.id as string);
+    
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user?.id || (token.id as string) },
+      select: { role: true }
+    });
+    
+    session.user.role = dbUser?.role || 'CUSTOMER';
+  }
+  return session;
+},
     async signIn({ user, account, profile }) {
       return true;
     },
