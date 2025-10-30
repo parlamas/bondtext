@@ -12,15 +12,29 @@ export default function RestaurantSignIn() {
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    await signIn('credentials', {
+  e.preventDefault();
+  
+  try {
+    const result = await signIn('credentials', {
       username: formData.username,
       password: formData.password,
-      redirect: true,
-      callbackUrl: '/dashboard'
+      redirect: false,
     });
-  };
+
+    console.log('SignIn result:', result);
+    alert('SignIn Result: ' + JSON.stringify(result));
+    
+    if (result?.error) {
+      console.error('SignIn failed:', result.error);
+      alert('Sign in failed: ' + result.error);
+    } else if (result?.ok) {
+      window.location.href = '/dashboard';
+    }
+  } catch (error) {
+    console.error('SignIn error:', error);
+    alert('Sign in error: ' + error);
+  }
+};
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
