@@ -12,21 +12,15 @@ export default function RestaurantSignIn() {
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  
-  const result = await signIn('credentials', {
-    username: formData.username,
-    password: formData.password,
-    redirect: false,
-  });
-
-  if (result?.ok) {
-    window.location.href = '/dashboard';
-  } else {
-    console.error('Sign in failed');
-  }
-};
-
+    e.preventDefault();
+    
+    await signIn('credentials', {
+      username: formData.username,
+      password: formData.password,
+      redirect: true,
+      callbackUrl: '/dashboard'
+    });
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -96,4 +90,3 @@ export default function RestaurantSignIn() {
     </div>
   );
 }
-
