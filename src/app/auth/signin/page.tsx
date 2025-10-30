@@ -22,13 +22,12 @@ export default function RestaurantSignIn() {
     });
 
     console.log('SignIn result:', result);
-    alert('SignIn Result: ' + JSON.stringify(result));
     
-    if (result?.error) {
-      console.error('SignIn failed:', result.error);
-      alert('Sign in failed: ' + result.error);
-    } else if (result?.ok) {
+    if (result?.ok) {
+      // Force redirect to dashboard
       window.location.href = '/dashboard';
+    } else {
+      alert('Sign in failed: ' + result?.error);
     }
   } catch (error) {
     console.error('SignIn error:', error);
