@@ -90,34 +90,22 @@ export async function POST(request: NextRequest) {
     const verificationToken = crypto.randomBytes(32).toString('hex');
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-    // Store verification token in database
-    try {
-      await prisma.verificationToken.create({
-        data: {
-          identifier: email,
-          token: verificationToken,
-          expires,
-        }
-      });
-      console.log('✅ Verification token stored in database');
-    } catch (tokenError) {
-      console.error('❌ Failed to store verification token:', tokenError);
-    }
-
-    // Send verification email with COMPLETE error handling
-    console.log('📧 Attempting to send verification email...');
-    try {
-      await sendVerificationEmail(email, verificationToken);
-      console.log('✅ Verification email sent successfully');
-    } catch (emailError) {
-      console.error('❌ FAILED to send verification email:', emailError);
-      console.error('🔧 Email error details:', {
-        name: emailError.name,
-        message: emailError.message,
-        code: emailError.code,
-        stack: emailError.stack
-      });
-    }
+// Send verification email with COMPLETE error handling
+console.log('📧 Attempting to send verification email...');
+try {
+  await sendVerificationEmail(email, verificationToken);
+  console.log('✅ Verification email sent successfully');
+} catch (emailError) {
+  console.error('❌ FAILED to send verification email:', emailError);
+  // Fix: Type assertion for the error
+  const error = emailError as Error;
+  console.error('🔧 Email error details:', {
+    name: error.name,
+    message: error.message,
+    code: (error as any).code,
+    stack: error.stack
+  });
+}
 
     return NextResponse.json({
       message: 'User created successfully. Please check your email for verification.',
