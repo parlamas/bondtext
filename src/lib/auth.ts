@@ -4,11 +4,13 @@ import { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "./prisma";
 import EmailProvider from "next-auth/providers/email";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
-    // Only Email provider for email/password registration
+    // Email provider for email verification
     EmailProvider({
       server: {
         host: process.env.EMAIL_SERVER_HOST,
@@ -20,14 +22,56 @@ export const authOptions: NextAuthOptions = {
       },
       from: process.env.EMAIL_FROM,
     }),
+    // Add CredentialsProvider for username/password login
+    CredentialsProvider({
+      name: "credentials",
+      credentials: {
+        username: { label: "Username", type: "text" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        if (!credentials?.username || !credentials?.password) {
+          return null;
+        }
+
+        const user = await prisma.user.findFirst({
+          where: {
+            OR: [
+              { email: credentials.username },
+              { username: credentials.username }
+            ]
+          }
+        });
+
+        if (!user || !user.password) {
+          return null;
+        }
+
+        const passwordMatch = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+
+        if (!passwordMatch) {
+          return null;
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+          role: user.role,
+        };
+      }
+    })
   ],
   callbacks: {
-    async session({ session, user }) {
+    async session({ session, user, token }) {
       if (session.user) {
-        session.user.id = user.id;
+        session.user.id = user?.id || token.id;
         
         const dbUser = await prisma.user.findUnique({
-          where: { id: user.id },
+          where: { id: user?.id || token.id },
           select: { role: true }
         });
         
