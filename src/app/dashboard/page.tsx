@@ -34,19 +34,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      {/* Navigation */}
-      <nav className="flex justify-between items-center p-6 border-b border-gray-800">
-        <div className="text-2xl font-bold">BondText</div>
-        <div className="flex items-center space-x-6">
-          <span className="text-gray-300">{session.user?.email}</span>
-          <button
-            onClick={() => signOut({ callbackUrl: '/' })}
-            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors"
-          >
-            Sign Out
-          </button>
-        </div>
-      </nav>
+      
 
       {/* Dashboard Content */}
       <div className="max-w-6xl mx-auto p-6">
