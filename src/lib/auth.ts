@@ -3,18 +3,12 @@
 import { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "./prisma";
-import GoogleProvider from "next-auth/providers/google";
-import EmailProvider from "next-auth/providers/email"; // Add this import
+import EmailProvider from "next-auth/providers/email";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
-    // Keep your Google provider
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-    // Add Email provider for email verification
+    // Only Email provider for email/password registration
     EmailProvider({
       server: {
         host: process.env.EMAIL_SERVER_HOST,
@@ -25,9 +19,6 @@ export const authOptions: NextAuthOptions = {
         },
       },
       from: process.env.EMAIL_FROM,
-      // Or if using Resend:
-      // server: process.env.EMAIL_SERVER,
-      // from: process.env.EMAIL_FROM,
     }),
   ],
   callbacks: {
@@ -50,7 +41,7 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: '/auth/signin',
-    verifyRequest: '/auth/verify-request', // Add this for email verification page
+    verifyRequest: '/auth/verify-request',
   },
 };
 
