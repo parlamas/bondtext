@@ -3,7 +3,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
-import { sendPasswordResetEmail } from '@/lib/email'; // Add this import
+import { sendPasswordResetEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
@@ -37,16 +37,14 @@ export async function POST(request: NextRequest) {
       where: { identifier: email }
     });
 
-    // Create new reset token
-    await prisma.passwordResetToken.create({
-      data: {
-        identifier: email,
-        token: resetToken,
-        expires,
-      }
-    });
+    // Create new reset token using raw SQL
+    const tokenId = `prt_${crypto.randomBytes(16).toString('hex')}`;
+    await prisma.$executeRaw`
+      INSERT INTO password_reset_tokens (id, identifier, token, expires, "createdAt")
+      VALUES (${tokenId}, ${email}, ${resetToken}, ${expires}, NOW())
+    `;
 
-    // Send password reset email - ACTIVATE THIS
+    // Send password reset email
     await sendPasswordResetEmail(email, resetToken);
 
     return NextResponse.json({
