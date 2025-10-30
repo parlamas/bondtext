@@ -8,6 +8,16 @@ import { sendVerificationEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
+    // DEBUG: Log environment variables
+    console.log('🔧 PRODUCTION ENV VARIABLES:', {
+      EMAIL_SERVER_HOST: process.env.EMAIL_SERVER_HOST,
+      EMAIL_SERVER_USER: process.env.EMAIL_SERVER_USER,
+      EMAIL_SERVER_PORT: process.env.EMAIL_SERVER_PORT,
+      HAS_EMAIL_PASSWORD: !!process.env.EMAIL_SERVER_PASSWORD,
+      EMAIL_FROM: process.env.EMAIL_FROM,
+      NEXTAUTH_URL: process.env.NEXTAUTH_URL
+    });
+
     const body = await request.json();
     const { 
       username, 
@@ -71,13 +81,13 @@ export async function POST(request: NextRequest) {
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
     // Send verification email with error handling
-try {
-  await sendVerificationEmail(email, verificationToken);
-  console.log('Verification email sent successfully');
-} catch (emailError) {
-  console.error('Failed to send verification email:', emailError);
-  // Don't fail the registration - user can request resend later
-}
+    try {
+      await sendVerificationEmail(email, verificationToken);
+      console.log('Verification email sent successfully');
+    } catch (emailError) {
+      console.error('Failed to send verification email:', emailError);
+      // Don't fail the registration - user can request resend later
+    }
 
     console.log('User created successfully:', user.id);
 
@@ -99,3 +109,4 @@ try {
     );
   }
 }
+
