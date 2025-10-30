@@ -92,23 +92,17 @@ export async function POST(request: NextRequest) {
 
     // Store verification token in database
 try {
-  // Create a manual ID
   const tokenId = `vt_${crypto.randomBytes(16).toString('hex')}`;
   
-  // @ts-ignore - bypass TypeScript check for id field
-  await prisma.verificationToken.create({
-    data: {
-      id: tokenId,
-      identifier: email,
-      token: verificationToken,
-      expires,
-    }
-  });
+  // Use raw SQL to bypass Prisma type checking
+  await prisma.$executeRaw`
+    INSERT INTO verification_tokens (id, identifier, token, expires, "createdAt")
+    VALUES (${tokenId}, ${email}, ${verificationToken}, ${expires}, NOW())
+  `;
   console.log('✅ Verification token stored in database');
 } catch (tokenError) {
   console.error('❌ Failed to store verification token:', tokenError);
 }
-
 
     // Verify the token was actually stored
 const storedToken = await prisma.verificationToken.findUnique({
