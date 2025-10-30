@@ -15,6 +15,11 @@ export default function Dashboard() {
     }
   }, [status, router]);
 
+  useEffect(() => {
+  console.log('Session status:', status);
+  console.log('Session data:', session);
+}, [status, session]);
+
   if (status === 'loading') {
     return (
       <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
