@@ -1,7 +1,5 @@
 // prisma/schema.prisma
 
-// prisma/schema.prisma
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -114,6 +112,7 @@ model Restaurant {
   owner   User   @relation(fields: [ownerId], references: [id])
   menus   Menu[]
   orders  Order[]
+  bookings Booking[]  // ← ADD THIS MISSING LINE
 
   @@map("restaurants")
 }
@@ -194,4 +193,50 @@ enum OrderStatus {
   READY_FOR_PICKUP
   COMPLETED
   CANCELLED
+}
+
+model Customer {
+  id            String   @id @default(cuid())
+  fullName      String   @map("full_name")
+  username      String   @unique
+  email         String   @unique
+  telephone     String
+  emailVerified DateTime? @map("email_verified")
+  password      String
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  
+  // Relationships
+  bookings Booking[]
+
+  @@map("customers")
+}
+
+model Booking {
+  id              String   @id @default(cuid())
+  date            DateTime
+  time            String
+  partySize       Int      @map("party_size")
+  childrenCount   Int      @default(0) @map("children_count")
+  childrenAges    String?  @map("children_ages") // JSON string for ages array
+  status          BookingStatus @default(PENDING)
+  totalAmount     Float    @map("total_amount")
+  discountAmount  Float    @map("discount_amount")
+  finalAmount     Float    @map("final_amount")
+  bookingDate     DateTime @default(now()) @map("booking_date")
+  
+  // Relationships
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  restaurantId String
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id])
+
+  @@map("bookings")
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
 }
