@@ -93,7 +93,7 @@ export default function Dashboard() {
     </h2>
     <p className="text-blue-100 mb-3 text-sm">
       Get started with our premium features to set up your restaurant, manage menus, 
-      process orders, and track your performance. Join hundreds of successful restaurants 
+      process orders, and track your performance.<br/>Join hundreds of successful restaurants 
       using our platform to manage their business, increase sales, and delight customers.
     </p>
     <button
