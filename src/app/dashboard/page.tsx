@@ -70,8 +70,6 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      {/* Completely clean - no header at all */}
-      
       {/* Dashboard Content */}
       <div className="max-w-6xl mx-auto p-6">
         {/* Main Heading */}
@@ -82,31 +80,28 @@ export default function Dashboard() {
           <p className="text-gray-400 text-lg">
             {isPremium 
               ? 'Everything you need to run your restaurant efficiently' 
-              : 'Choose a feature below to get started'
+              : 'Set up your restaurant and start accepting orders today'
             }
           </p>
         </div>
 
+        {/* Single Combined Message for Non-Premium Users */}
         {!isPremium && (
-          <div className="bg-blue-600 border-l-4 border-blue-400 p-6 rounded-lg mb-8">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <svg className="h-8 w-8 text-blue-300" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div className="ml-4">
-                <h3 className="text-lg font-medium text-white">
-                  Unlock Full Access
-                </h3>
-                <div className="mt-2 text-blue-100">
-                  <p>
-                    Get started with our premium features to set up your restaurant, manage menus, 
-                    process orders, and track your performance.
-                  </p>
-                </div>
-              </div>
-            </div>
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 rounded-lg mb-8 text-center">
+            <h2 className="text-2xl font-bold text-white mb-4">
+              Ready to Launch Your Restaurant?
+            </h2>
+            <p className="text-blue-100 mb-6 max-w-2xl mx-auto text-lg">
+              Get started with our premium features to set up your restaurant, manage menus, 
+              process orders, and track your performance. Join hundreds of successful restaurants 
+              using our platform.
+            </p>
+            <button
+              onClick={() => setShowPaymentModal(true)}
+              className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-bold text-lg transition-colors"
+            >
+              Get Started Today
+            </button>
           </div>
         )}
 
@@ -219,25 +214,6 @@ export default function Dashboard() {
             </button>
           </div>
         </div>
-
-        {/* Call to Action for Non-Premium Users */}
-        {!isPremium && (
-          <div className="text-center mt-12 p-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
-            <h2 className="text-2xl font-bold text-white mb-4">
-              Ready to Launch Your Restaurant?
-            </h2>
-            <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
-              Join hundreds of successful restaurants using our platform to manage their business, 
-              increase sales, and delight customers.
-            </p>
-            <button
-              onClick={() => setShowPaymentModal(true)}
-              className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-bold text-lg transition-colors"
-            >
-              Get Started Today
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Payment Modal */}
