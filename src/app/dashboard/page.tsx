@@ -91,7 +91,7 @@ export default function Dashboard() {
     <h2 className="text-lg font-bold text-white mb-2">
       Ready to Launch Your Restaurant?
     </h2>
-    <p className="text-blue-100 mb-3 text-sm max-w-2xl mx-auto">
+    <p className="text-blue-100 mb-3 text-sm">
       Get started with our premium features to set up your restaurant, manage menus, 
       process orders, and track your performance. Join hundreds of successful restaurants 
       using our platform to manage their business, increase sales, and delight customers.
