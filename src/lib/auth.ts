@@ -73,14 +73,14 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.role = user.role;
-        token.username = user.username; // ← ADDED THIS LINE
-      }
-      return token;
-    },
+async jwt({ token, user }) {
+  if (user) {
+    token.id = user.id;
+    token.role = (user as any).role;
+    token.username = (user as any).username; // Use type assertion
+  }
+  return token;
+},
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
