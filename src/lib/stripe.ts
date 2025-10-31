@@ -1,8 +1,9 @@
 // lib/stripe.ts
+
 import Stripe from 'stripe';
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16',
+  apiVersion: '2025-10-29.clover', // Updated to latest version
 });
 
 export const getStripeCustomerId = async (user: any) => {
@@ -20,6 +21,9 @@ export const getStripeCustomerId = async (user: any) => {
   });
 
   // Update user with Stripe customer ID
+  // Note: You'll need to import prisma here
+  const { prisma } = await import('./prisma');
+  
   await prisma.user.update({
     where: { id: user.id },
     data: { stripeCustomerId: customer.id },
@@ -27,3 +31,4 @@ export const getStripeCustomerId = async (user: any) => {
 
   return customer.id;
 };
+
