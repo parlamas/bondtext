@@ -1,5 +1,4 @@
 // src/app/dashboard/page.tsx
-
 'use client';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -16,11 +15,6 @@ export default function Dashboard() {
       router.push('/auth/signin');
     }
   }, [status, router]);
-
-  useEffect(() => {
-    console.log('Session status:', status);
-    console.log('Session data:', session);
-  }, [status, session]);
 
   // Check premium status when session loads
   useEffect(() => {
@@ -69,18 +63,10 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen bg-gray-900 text-white">
         <div className="max-w-6xl mx-auto p-6">
-          {/* Header */}
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h1 className="text-4xl font-bold mb-2">Dashboard</h1>
-              <p className="text-gray-400">Welcome back, {session.user?.name || session.user?.email}</p>
-            </div>
-            <button
-              onClick={() => signOut()}
-              className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded transition-colors"
-            >
-              Sign Out
-            </button>
+          {/* Header - REMOVED THE EXTRA SIGN OUT BUTTON HERE */}
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold mb-2">Dashboard</h1>
+            <p className="text-gray-400">Welcome back, {session.user?.name || session.user?.email}</p>
           </div>
 
           {/* Payment Required Banner */}
@@ -167,7 +153,7 @@ export default function Dashboard() {
   // Premium user dashboard
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      {/* Header */}
+      {/* Header - Only one Sign Out button here */}
       <div className="bg-gray-800 border-b border-gray-700">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
@@ -268,26 +254,6 @@ export default function Dashboard() {
               className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded transition-colors w-full"
             >
               View Analytics
-            </button>
-          </div>
-
-          {/* Restaurant Settings */}
-          <div className="bg-gray-800 p-6 rounded-lg">
-            <div className="flex items-center mb-4">
-              <div className="bg-yellow-600 p-3 rounded-lg mr-4">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold">Settings</h3>
-            </div>
-            <p className="text-gray-400 mb-4">Configure your restaurant details, hours, and preferences.</p>
-            <button 
-              onClick={() => router.push('/restaurant/settings')}
-              className="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded transition-colors w-full"
-            >
-              Manage Settings
             </button>
           </div>
         </div>
