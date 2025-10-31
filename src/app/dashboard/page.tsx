@@ -47,14 +47,16 @@ export default function Dashboard() {
     }
   }, [session]);
 
-  const handleFeatureClick = (feature: string) => {
-    if (!isPremium) {
-      setShowPaymentModal(true);
-    } else {
-      // Navigate to the actual feature
-      router.push(`/restaurant/${feature}`);
-    }
-  };
+  
+const handleFeatureClick = (feature: string) => {
+  if (!isPremium) {
+    // Go directly to payment page instead of showing modal
+    router.push('/payment');
+  } else {
+    // Navigate to the actual feature
+    router.push(`/restaurant/${feature}`);
+  }
+};
 
   if (status === 'loading' || loading) {
     return (
