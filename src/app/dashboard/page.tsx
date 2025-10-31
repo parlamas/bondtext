@@ -70,14 +70,11 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      {/* Header */}
+      {/* Clean Header - No redundant welcome message */}
       <div className="bg-gray-800 border-b border-gray-700">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-bold">Restaurant Dashboard</h1>
-              <p className="text-gray-400">Welcome back, {session.user?.name || session.user?.email}</p>
-            </div>
+            <h1 className="text-2xl font-bold">Restaurant Dashboard</h1>
             <div className="flex items-center space-x-4">
               {isPremium && (
                 <div className="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-bold">
@@ -97,15 +94,15 @@ export default function Dashboard() {
 
       {/* Dashboard Content */}
       <div className="max-w-6xl mx-auto p-6">
-        {/* Welcome Section */}
+        {/* Main Heading */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">
-            {isPremium ? 'Your Restaurant Dashboard' : 'Ready to Get Started?'}
+            {isPremium ? 'Manage Your Restaurant' : 'Get Your Restaurant Online'}
           </h1>
           <p className="text-gray-400 text-lg">
             {isPremium 
-              ? 'Manage your restaurant and grow your business' 
-              : 'Set up your restaurant and start accepting orders today'
+              ? 'Everything you need to run your restaurant efficiently' 
+              : 'Choose a feature below to get started'
             }
           </p>
         </div>
