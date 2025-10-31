@@ -1,17 +1,19 @@
 // lib/stripe.ts
-
 import Stripe from 'stripe';
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-10-29.clover', // Updated to latest version
-});
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('STRIPE_SECRET_KEY is not defined');
+}
 
-export const getStripeCustomerId = async (user: any) => {
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Remove apiVersion - Stripe will use the default
+
+// Helper to get or create Stripe customer
+export const getOrCreateStripeCustomer = async (user: any, prisma: any) => {
   if (user.stripeCustomerId) {
     return user.stripeCustomerId;
   }
 
-  // Create new Stripe customer
   const customer = await stripe.customers.create({
     email: user.email,
     name: user.name || '',
@@ -21,9 +23,6 @@ export const getStripeCustomerId = async (user: any) => {
   });
 
   // Update user with Stripe customer ID
-  // Note: You'll need to import prisma here
-  const { prisma } = await import('./prisma');
-  
   await prisma.user.update({
     where: { id: user.id },
     data: { stripeCustomerId: customer.id },
@@ -31,4 +30,3 @@ export const getStripeCustomerId = async (user: any) => {
 
   return customer.id;
 };
-
