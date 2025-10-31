@@ -93,7 +93,8 @@ export default function Dashboard() {
     </h2>
     <p className="text-blue-100 mb-3 text-sm max-w-2xl mx-auto">
       Get started with our premium features to set up your restaurant, manage menus, 
-      process orders, and track your performance.
+      process orders, and track your performance. Join hundreds of successful restaurants 
+      using our platform to manage their business, increase sales, and delight customers.
     </p>
     <button
       onClick={() => setShowPaymentModal(true)}
@@ -103,7 +104,6 @@ export default function Dashboard() {
     </button>
   </div>
 )}
-
         {/* Quick Stats for Premium Users */}
         {isPremium && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
