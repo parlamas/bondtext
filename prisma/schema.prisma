@@ -1,5 +1,7 @@
 // prisma/schema.prisma
 
+// prisma/schema.prisma
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -50,6 +52,12 @@ model User {
   role          UserRole  @default(CUSTOMER)
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
+  
+  // Premium subscription fields
+  isPremium          Boolean   @default(false)
+  premiumSince       DateTime?
+  stripeCustomerId   String?   @map("stripe_customer_id")
+  stripeSubscriptionId String? @map("stripe_subscription_id")
 
   // Restaurant owner specific fields
   restaurant   Restaurant?
