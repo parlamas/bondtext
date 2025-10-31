@@ -250,19 +250,19 @@ export default function Dashboard() {
             </div>
 
             <div className="flex space-x-4">
-              <button
-                onClick={() => setShowPaymentModal(false)}
-                className="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded transition-colors"
-              >
-                Maybe Later
-              </button>
-              <button
-                onClick={() => router.push('/payment')}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors"
-              >
-                Subscribe Now
-              </button>
-            </div>
+  <button
+    onClick={() => setShowPaymentModal(false)}
+    className="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded transition-colors"
+  >
+    Close
+  </button>
+  <button
+    onClick={() => router.push('/payment')}
+    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors"
+  >
+    Subscribe Now
+  </button>
+</div>
           </div>
         </div>
       )}
