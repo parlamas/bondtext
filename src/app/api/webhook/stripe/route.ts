@@ -1,10 +1,9 @@
-// app/api/webhooks/stripe/route.ts
+// app/api/webhook/stripe/route.ts
 
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { stripe } from '@/lib/stripe';
 import { prisma } from '@/lib/prisma';
-import type { Stripe } from 'stripe';
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -14,7 +13,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'No signature' }, { status: 400 });
   }
 
-  let event: Stripe.Event;
+  let event: any;
 
   try {
     event = stripe.webhooks.constructEvent(
@@ -32,10 +31,8 @@ export async function POST(request: Request) {
       case 'checkout.session.completed': {
         const session = event.data.object;
         
-        // Use type guards to check the properties
-        if (typeof session.customer_email !== 'string' || 
-            typeof session.customer !== 'string' || 
-            typeof session.subscription !== 'string') {
+        // Check if we have the necessary data
+        if (!session.customer_email || !session.customer || !session.subscription) {
           console.error('Missing required session data:', session);
           break;
         }
@@ -59,21 +56,32 @@ export async function POST(request: Request) {
         const subscription = event.data.object;
         
         // Check if we have the subscription ID
-        if (typeof subscription.id !== 'string') {
+        if (!subscription.id) {
           console.error('Missing subscription ID');
           break;
         }
 
-        // Downgrade user if subscription is cancelled
-        await prisma.user.update({
-          where: { 
-            stripeSubscriptionId: subscription.id 
-          },
-          data: {
-            isPremium: false,
-            stripeSubscriptionId: null,
-          },
+        // Find user by stripeSubscriptionId first, then update
+        const user = await prisma.user.findFirst({
+          where: {
+            stripeSubscriptionId: subscription.id
+          }
         });
+
+        if (user) {
+          // Downgrade user if subscription is cancelled
+          await prisma.user.update({
+            where: { 
+              id: user.id 
+            },
+            data: {
+              isPremium: false,
+              stripeSubscriptionId: null,
+            },
+          });
+        } else {
+          console.error('User not found for subscription:', subscription.id);
+        }
         break;
       }
 
