@@ -17,36 +17,36 @@ export default function PaymentPage() {
   const amount = isAnnual ? 1200 : 120;
 
   const handlePayment = async () => {
-    if (!session) return;
-    
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch('/api/create-subscription', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          plan: selectedPlan,
-        }),
-      });
+  if (!session) return;
+  
+  setLoading(true);
+  setError(null);
+  try {
+    const response = await fetch('/api/create-subscription', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        plan: selectedPlan,
+      }),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
+    console.log('API Response:', data); // Add this line
 
-      if (response.ok && data.url) {
-        // Redirect to Stripe Checkout
-        window.location.href = data.url;
-      } else {
-        throw new Error(data.error || 'Failed to create subscription');
-      }
-    } catch (error) {
-      console.error('Payment error:', error);
-      setError('Failed to process payment. Please try again.');
-    } finally {
-      setLoading(false);
+    if (response.ok && data.url) {
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || 'Failed to create subscription');
     }
-  };
+  } catch (error) {
+    console.error('Payment error:', error);
+    setError(`Payment failed: ${(error as Error).message}`);
+  } finally {
+    setLoading(false);
+  }
+};
 
   if (!session) {
     return (
