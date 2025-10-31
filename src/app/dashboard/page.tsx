@@ -85,25 +85,24 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* Single Combined Message for Non-Premium Users */}
-        {!isPremium && (
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 rounded-lg mb-8 text-center">
-            <h2 className="text-2xl font-bold text-white mb-4">
-              Ready to Launch Your Restaurant?
-            </h2>
-            <p className="text-blue-100 mb-6 max-w-2xl mx-auto text-lg">
-              Get started with our premium features to set up your restaurant, manage menus, 
-              process orders, and track your performance. Join hundreds of successful restaurants 
-              using our platform.
-            </p>
-            <button
-              onClick={() => setShowPaymentModal(true)}
-              className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-bold text-lg transition-colors"
-            >
-              Get Started Today
-            </button>
-          </div>
-        )}
+        {/* Extra Compact Version */}
+{!isPremium && (
+  <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 rounded-lg mb-4 text-center">
+    <h2 className="text-lg font-bold text-white mb-2">
+      Ready to Launch Your Restaurant?
+    </h2>
+    <p className="text-blue-100 mb-3 text-sm max-w-2xl mx-auto">
+      Get started with our premium features to set up your restaurant, manage menus, 
+      process orders, and track your performance.
+    </p>
+    <button
+      onClick={() => setShowPaymentModal(true)}
+      className="bg-white text-blue-600 hover:bg-gray-100 px-4 py-1 rounded font-bold text-sm transition-colors"
+    >
+      Get Started Today
+    </button>
+  </div>
+)}
 
         {/* Quick Stats for Premium Users */}
         {isPremium && (
