@@ -41,10 +41,6 @@ export default function Dashboard() {
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">Dashboard</h1>
           <p className="text-gray-400">Welcome back, {session.user?.name || session.user?.email}</p>
-          <div className="mt-4 p-4 bg-gray-800 rounded-lg">
-            <p><strong>Role:</strong> {session.user?.role}</p>
-            <p><strong>User ID:</strong> {session.user?.id}</p>
-          </div>
         </div>
 
         {/* Restaurant Management Sections */}
