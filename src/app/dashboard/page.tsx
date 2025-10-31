@@ -70,28 +70,8 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      {/* Clean Header - No redundant welcome message */}
-      <div className="bg-gray-800 border-b border-gray-700">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold">Restaurant Dashboard</h1>
-            <div className="flex items-center space-x-4">
-              {isPremium && (
-                <div className="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-bold">
-                  PREMIUM
-                </div>
-              )}
-              <button
-                onClick={() => signOut()}
-                className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded transition-colors"
-              >
-                Sign Out
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      {/* Completely clean - no header at all */}
+      
       {/* Dashboard Content */}
       <div className="max-w-6xl mx-auto p-6">
         {/* Main Heading */}
