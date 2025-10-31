@@ -6,10 +6,10 @@ import { prisma } from '@/lib/prisma';
 
 export async function POST(request: Request) {
   try {
-    const { fullName, username, email, telephone, password } = await request.json();
+    const { fullName, username, email, telephone, countryCode, ageRange, password } = await request.json();
 
     // Validate required fields
-    if (!fullName || !username || !email || !telephone || !password) {
+    if (!fullName || !username || !email || !telephone || !countryCode || !ageRange || !password) {
       return NextResponse.json(
         { error: 'All fields are required' },
         { status: 400 }
@@ -49,15 +49,11 @@ export async function POST(request: Request) {
         username,
         email,
         telephone,
+        countryCode,
+        ageRange,
         password: hashedPassword,
+        emailVerified: new Date(), // Auto-verify for now
       },
-    });
-
-    // TODO: Send verification email
-    // For now, we'll auto-verify for testing
-    await prisma.customer.update({
-      where: { id: customer.id },
-      data: { emailVerified: new Date() }
     });
 
     return NextResponse.json({ 

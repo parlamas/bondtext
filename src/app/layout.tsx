@@ -1,4 +1,4 @@
-//src/app/layout.tsx
+// src/app/layout.tsx
 
 import type { Metadata } from 'next'
 import Providers from './providers'
@@ -29,3 +29,4 @@ export default function RootLayout({
     </html>
   )
 }
+

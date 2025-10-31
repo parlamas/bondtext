@@ -1,17 +1,19 @@
-// app/book/signin/page.tsx
+//src/app/customer/signin/page.tsx
 
 'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useCustomerAuth } from '@/context/CustomerAuthContext';
 
 export default function CustomerSignin() {
   const router = useRouter();
+  const { login } = useCustomerAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
-    email: '',
+    username: '',
     password: '',
   });
 
@@ -32,9 +34,8 @@ export default function CustomerSignin() {
       const data = await response.json();
 
       if (response.ok) {
-        // TODO: Store customer session
-        // For now, redirect to booking page
-        router.push('/book/booking');
+        login(data.customer);
+        router.push('/');
       } else {
         setError(data.error || 'Sign in failed');
       }
@@ -60,7 +61,7 @@ export default function CustomerSignin() {
             Customer Sign In
           </h2>
           <p className="mt-2 text-center text-sm text-gray-400">
-            Sign in to book your table
+            Sign in to book restaurants
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -72,18 +73,18 @@ export default function CustomerSignin() {
           
           <div className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300">
-                Email Address *
+              <label htmlFor="username" className="block text-sm font-medium text-gray-300">
+                Username *
               </label>
               <input
-                id="email"
-                name="email"
-                type="email"
+                id="username"
+                name="username"
+                type="text"
                 required
-                value={formData.email}
+                value={formData.username}
                 onChange={handleChange}
                 className="mt-1 block w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                placeholder="Enter your email"
+                placeholder="Enter your username"
               />
             </div>
 
@@ -104,17 +105,6 @@ export default function CustomerSignin() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="text-sm">
-              <Link
-                href="/book/forgot-password"
-                className="text-green-400 hover:text-green-300"
-              >
-                Forgot your password?
-              </Link>
-            </div>
-          </div>
-
           <div>
             <button
               type="submit"
@@ -127,7 +117,7 @@ export default function CustomerSignin() {
 
           <div className="text-center">
             <Link
-              href="/book/signup"
+              href="/customer/signup"
               className="text-green-400 hover:text-green-300 text-sm"
             >
               Don't have an account? Sign up

@@ -51,16 +51,13 @@ model User {
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
   
-  // Premium subscription fields
   isPremium          Boolean   @default(false)
   premiumSince       DateTime?
   stripeCustomerId   String?   @map("stripe_customer_id")
   stripeSubscriptionId String? @map("stripe_subscription_id")
 
-  // Restaurant owner specific fields
   restaurant   Restaurant?
   
-  // Relationships
   accounts      Account[]
   sessions      Session[]
   orders        Order[]
@@ -104,15 +101,17 @@ model Restaurant {
   logo        String?
   coverImage  String?  @map("cover_image")
   isActive    Boolean  @default(false) @map("is_active")
+  country     String
+  city        String
+  restaurantCode String @unique @map("restaurant_code")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
   
-  // Relationships
   ownerId String @unique
   owner   User   @relation(fields: [ownerId], references: [id])
   menus   Menu[]
   orders  Order[]
-  bookings Booking[]  // ← ADD THIS MISSING LINE
+  bookings Booking[]
 
   @@map("restaurants")
 }
@@ -125,7 +124,6 @@ model Menu {
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
   
-  // Relationships
   restaurantId String
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
   items        MenuItem[]
@@ -142,7 +140,6 @@ model MenuItem {
   isAvailable Boolean  @default(true) @map("is_available")
   discount    Float?   @default(0)
   
-  // Relationships
   menuId      String
   menu        Menu    @relation(fields: [menuId], references: [id])
   orderItems  OrderItem[]
@@ -157,7 +154,6 @@ model Order {
   orderDate   DateTime      @default(now()) @map("order_date")
   pickupTime  DateTime      @map("pickup_time")
   
-  // Relationships
   customerId  String
   customer    User          @relation(fields: [customerId], references: [id])
   restaurantId String
@@ -172,13 +168,51 @@ model OrderItem {
   quantity Int
   price    Float
   
-  // Relationships
   orderId      String
   order        Order    @relation(fields: [orderId], references: [id])
   menuItemId   String
   menuItem     MenuItem @relation(fields: [menuItemId], references: [id])
 
   @@map("order_items")
+}
+
+model Customer {
+  id            String   @id @default(cuid())
+  fullName      String   @map("full_name")
+  username      String   @unique
+  email         String   @unique
+  telephone     String
+  countryCode   String   @map("country_code")
+  ageRange      String   @map("age_range")
+  emailVerified DateTime? @map("email_verified")
+  password      String
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  
+  bookings Booking[]
+
+  @@map("customers")
+}
+
+model Booking {
+  id              String   @id @default(cuid())
+  date            DateTime
+  time            String
+  partySize       Int      @map("party_size")
+  childrenCount   Int      @default(0) @map("children_count")
+  childrenAges    String?  @map("children_ages")
+  status          BookingStatus @default(PENDING)
+  totalAmount     Float    @map("total_amount")
+  discountAmount  Float    @map("discount_amount")
+  finalAmount     Float    @map("final_amount")
+  bookingDate     DateTime @default(now()) @map("booking_date")
+  
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  restaurantId String
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id])
+
+  @@map("bookings")
 }
 
 enum UserRole {
@@ -193,45 +227,6 @@ enum OrderStatus {
   READY_FOR_PICKUP
   COMPLETED
   CANCELLED
-}
-
-model Customer {
-  id            String   @id @default(cuid())
-  fullName      String   @map("full_name")
-  username      String   @unique
-  email         String   @unique
-  telephone     String
-  emailVerified DateTime? @map("email_verified")
-  password      String
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
-  
-  // Relationships
-  bookings Booking[]
-
-  @@map("customers")
-}
-
-model Booking {
-  id              String   @id @default(cuid())
-  date            DateTime
-  time            String
-  partySize       Int      @map("party_size")
-  childrenCount   Int      @default(0) @map("children_count")
-  childrenAges    String?  @map("children_ages") // JSON string for ages array
-  status          BookingStatus @default(PENDING)
-  totalAmount     Float    @map("total_amount")
-  discountAmount  Float    @map("discount_amount")
-  finalAmount     Float    @map("final_amount")
-  bookingDate     DateTime @default(now()) @map("booking_date")
-  
-  // Relationships
-  customerId String
-  customer   Customer @relation(fields: [customerId], references: [id])
-  restaurantId String
-  restaurant Restaurant @relation(fields: [restaurantId], references: [id])
-
-  @@map("bookings")
 }
 
 enum BookingStatus {

@@ -1,11 +1,10 @@
-// lib/customer-auth.ts
+//src/lib/customer-auth.ts
 
 import { cookies } from 'next/headers';
 
 export async function createCustomerSession(customerId: string) {
   const cookieStore = cookies();
   
-  // Create a simple session token (in production, use JWT or similar)
   const sessionToken = Buffer.from(`${customerId}:${Date.now()}`).toString('base64');
   
   cookieStore.set('customer_session', sessionToken, {
@@ -25,7 +24,6 @@ export async function getCustomerSession() {
   if (!sessionToken) return null;
   
   try {
-    // Decode the session token
     const decoded = Buffer.from(sessionToken, 'base64').toString();
     const [customerId] = decoded.split(':');
     
@@ -39,3 +37,4 @@ export async function deleteCustomerSession() {
   const cookieStore = cookies();
   cookieStore.delete('customer_session');
 }
+
