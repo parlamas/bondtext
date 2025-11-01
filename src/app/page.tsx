@@ -108,7 +108,7 @@ export default function HomePage() {
                   name="city"
                   required
                   value={searchData.city}
-                  onChange={(e) => setSearchData({...searchactData, city: e.target.value})}
+                  onChange={(e) => setSearchData({...searchData, city: e.target.value})}
                   placeholder="Enter your city"
                   className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
                 />
