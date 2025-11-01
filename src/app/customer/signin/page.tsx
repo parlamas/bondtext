@@ -9,7 +9,7 @@ import { useCustomerAuth } from '@/context/CustomerAuthContext';
 
 export default function CustomerSignin() {
   const router = useRouter();
-  const { login } = useCustomerAuth();
+  const { login, checkCustomerSession } = useCustomerAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
@@ -34,8 +34,15 @@ export default function CustomerSignin() {
       const data = await response.json();
 
       if (response.ok) {
+        // Update the context with customer data
         login(data.customer);
+        
+        // Force a session check to ensure consistency
+        await checkCustomerSession?.();
+        
+        // Redirect to home page
         router.push('/');
+        router.refresh(); // Force a refresh to update the navbar
       } else {
         setError(data.error || 'Sign in failed');
       }
@@ -70,7 +77,7 @@ export default function CustomerSignin() {
               {error}
             </div>
           )}
-          
+
           <div className="space-y-4">
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-300">
@@ -115,7 +122,13 @@ export default function CustomerSignin() {
             </button>
           </div>
 
-          <div className="text-center">
+          <div className="flex justify-between items-center">
+            <Link
+              href="/customer/forgot-password"
+              className="text-blue-400 hover:text-blue-300 text-sm"
+            >
+              Forgot password?
+            </Link>
             <Link
               href="/customer/signup"
               className="text-green-400 hover:text-green-300 text-sm"

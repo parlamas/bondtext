@@ -16,6 +16,7 @@ interface CustomerAuthContextType {
   isLoading: boolean;
   login: (customer: Customer) => void;
   logout: () => void;
+  checkCustomerSession: () => Promise<void>;
 }
 
 const CustomerAuthContext = createContext<CustomerAuthContextType | undefined>(undefined);
@@ -24,23 +25,26 @@ export function CustomerAuthProvider({ children }: { children: ReactNode }) {
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    checkCustomerSession();
-  }, []);
-
   const checkCustomerSession = async () => {
     try {
       const response = await fetch('/api/auth/customer/session');
       if (response.ok) {
         const data = await response.json();
         setCustomer(data.customer);
+      } else {
+        setCustomer(null);
       }
     } catch (error) {
       console.error('Error checking customer session:', error);
+      setCustomer(null);
     } finally {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    checkCustomerSession();
+  }, []);
 
   const login = (customerData: Customer) => {
     setCustomer(customerData);
@@ -57,7 +61,13 @@ export function CustomerAuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <CustomerAuthContext.Provider value={{ customer, isLoading, login, logout }}>
+    <CustomerAuthContext.Provider value={{ 
+      customer, 
+      isLoading, 
+      login, 
+      logout,
+      checkCustomerSession 
+    }}>
       {children}
     </CustomerAuthContext.Provider>
   );

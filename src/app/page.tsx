@@ -50,19 +50,20 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      {/* Hero Section - Reduced padding */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-12">
+      {/* Hero Section - DRAMATICALLY REDUCED height */}
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-8"> {/* Reduced from py-12 */}
         <div className="max-w-4xl mx-auto text-center px-4">
-          <h1 className="text-4xl font-bold mb-4">BondText</h1>
-          <p className="text-lg text-blue-100">
+          <h1 className="text-3xl font-bold mb-2">BondText</h1> {/* Reduced from text-4xl */}
+          <p className="text-sm text-blue-100"> {/* Reduced from text-lg */}
             Book, pre-order, and pre-pay in advance to take advantage of exclusive discounts
           </p>
         </div>
       </div>
 
+      {/* Rest of your existing code remains the same */}
       {/* Search Section - Reduced negative margin */}
       {showSearch && (
-        <div className="max-w-2xl mx-auto -mt-6 px-4 relative">
+        <div className="max-w-2xl mx-auto -mt-4 px-4 relative"> {/* Reduced from -mt-6 */}
           <form onSubmit={handleSearch} className="bg-gray-800 rounded-lg p-6 shadow-lg relative">
             {/* Close Button */}
             <button
@@ -126,7 +127,7 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Signup Forms Section - Reduced spacing */}
+      {/* Signup Forms Section - Keep existing */}
       {!showSearch && (
         <div className="max-w-6xl mx-auto mt-8 px-4">
           <div className="text-center mb-6">
@@ -155,7 +156,7 @@ export default function HomePage() {
               
               <div className="space-y-3">
                 <div className="text-sm text-gray-300 space-y-1">
-                  <p>✓ Pre-order and pre-pay from restaurant menu</p>
+                  <p>✓ Pre-order from restaurant menus</p>
                   <p>✓ Enjoy exclusive discounts</p>
                   <p>✓ Secure prepayment</p>
                   <p>✓ Easy booking process</p>
@@ -182,7 +183,7 @@ export default function HomePage() {
               <div className="text-center mb-4">
                 <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    <path strokeLinecap="round" strokeJoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
                 </div>
                 <h3 className="text-xl font-bold mb-2">Restaurant Sign Up</h3>
@@ -216,7 +217,7 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Results Section - Reduced spacing */}
+      {/* Results Section - Keep existing */}
       {restaurants.length > 0 && (
         <div className="max-w-4xl mx-auto mt-8 px-4">
           <h2 className="text-xl font-bold mb-4">Restaurants in {searchData.city}, {searchData.country}</h2>
