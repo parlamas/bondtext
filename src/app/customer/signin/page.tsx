@@ -34,19 +34,22 @@ export default function CustomerSignin() {
       const data = await response.json();
 
       if (response.ok) {
+        console.log('Signin successful, updating context...');
+        
         // Update the context with customer data
         login(data.customer);
         
-        // Force a session check to ensure consistency
-        await checkCustomerSession?.();
-        
-        // Redirect to home page
-        router.push('/');
-        router.refresh(); // Force a refresh to update the navbar
+        // Wait a bit for the cookie to be set, then check session
+        setTimeout(async () => {
+          await checkCustomerSession();
+          console.log('Session check completed, redirecting...');
+          router.push('/');
+        }, 500);
       } else {
         setError(data.error || 'Sign in failed');
       }
     } catch (error) {
+      console.error('Signin error:', error);
       setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);

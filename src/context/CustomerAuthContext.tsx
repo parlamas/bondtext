@@ -27,11 +27,17 @@ export function CustomerAuthProvider({ children }: { children: ReactNode }) {
 
   const checkCustomerSession = async () => {
     try {
-      const response = await fetch('/api/auth/customer/session');
+      console.log('Checking customer session...');
+      const response = await fetch('/api/auth/customer/session', {
+        cache: 'no-store', // Prevent caching
+      });
+      
       if (response.ok) {
         const data = await response.json();
+        console.log('Session check successful:', data.customer);
         setCustomer(data.customer);
       } else {
+        console.log('Session check failed:', response.status);
         setCustomer(null);
       }
     } catch (error) {
@@ -47,6 +53,7 @@ export function CustomerAuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = (customerData: Customer) => {
+    console.log('Login called with:', customerData);
     setCustomer(customerData);
   };
 
