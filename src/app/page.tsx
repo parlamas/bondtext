@@ -50,14 +50,14 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       {/* Hero Section - DRAMATICALLY REDUCED height */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-8"> {/* Reduced from py-12 */}
-        <div className="max-w-4xl mx-auto text-center px-4">
-          <h1 className="text-3xl font-bold mb-2">BondText</h1> {/* Reduced from text-4xl */}
-          <p className="text-sm text-blue-100"> {/* Reduced from text-lg */}
-            Book, pre-order, and pre-pay in advance to take advantage of exclusive discounts
-          </p>
-        </div>
-      </div>
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-4"> {/* Reduced from py-8 */}
+  <div className="max-w-4xl mx-auto text-center px-4">
+    <h1 className="text-2xl font-bold mb-1">BondText</h1> {/* Reduced from text-3xl */}
+    <p className="text-xs text-blue-100"> {/* Reduced from text-sm */}
+      Book, pre-order, and pre-pay in advance to take advantage of exclusive discounts
+    </p>
+  </div>
+</div>
 
       {/* Search Section - Reduced negative margin */}
       {showSearch && (
