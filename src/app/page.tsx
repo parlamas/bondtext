@@ -52,77 +52,78 @@ export default function HomePage() {
       {/* Hero Section - DRAMATICALLY REDUCED height */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-3"> {/* Reduced from py-4 */}
   <div className="max-w-4xl mx-auto text-center px-4">
-    <p className="text-sm text-blue-100 font-medium"> {/* Increased from text-xs to text-sm */}
+    <p className="text-lg text-blue-100 font-medium"> {/* Changed from text-sm to text-lg */}
       Book, pre-order, and pre-pay in advance to take advantage of exclusive discounts
     </p>
   </div>
 </div>
 
-      {/* Search Section - Reduced negative margin */}
-      {showSearch && (
-        <div className="max-w-2xl mx-auto -mt-4 px-4 relative"> {/* Reduced from -mt-6 */}
-          <form onSubmit={handleSearch} className="bg-gray-800 rounded-lg p-6 shadow-lg relative">
-            {/* Close Button */}
-            <button
-              type="button"
-              onClick={() => setShowSearch(false)}
-              className="absolute top-3 right-3 text-gray-400 hover:text-white transition-colors"
-              aria-label="Close search"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+{/* Search Section - Moved 50px lower */}
+{showSearch && (
+  <div className="max-w-2xl mx-auto mt-8 px-4 relative"> {/* Changed from -mt-4 to mt-8 */}
+    <form onSubmit={handleSearch} className="bg-gray-800 rounded-lg p-6 shadow-lg relative">
+      {/* Close Button */}
+      <button
+        type="button"
+        onClick={() => setShowSearch(false)}
+        className="absolute top-3 right-3 text-gray-400 hover:text-white transition-colors"
+        aria-label="Close search"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
 
-            <h2 className="text-xl font-bold mb-4 text-center">Find Restaurants</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-              <div>
-                <label htmlFor="country" className="block text-sm font-medium text-gray-300 mb-1">
-                  Country *
-                </label>
-                <select
-                  id="country"
-                  name="country"
-                  required
-                  value={searchData.country}
-                  onChange={(e) => setSearchData({...searchData, country: e.target.value})}
-                  className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
-                >
-                  <option value="">Select a country</option>
-                  {countries.map((country) => (
-                    <option key={country} value={country}>{country}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label htmlFor="city" className="block text-sm font-medium text-gray-300 mb-1">
-                  City *
-                </label>
-                <input
-                  type="text"
-                  id="city"
-                  name="city"
-                  required
-                  value={searchData.city}
-                  onChange={(e) => setSearchData({...searchData, city: e.target.value})}
-                  placeholder="Enter your city"
-                  className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white font-bold py-2 px-4 rounded transition-colors text-sm"
-            >
-              {loading ? 'Searching...' : 'Find Restaurants'}
-            </button>
-          </form>
+      <h2 className="text-xl font-bold mb-4 text-center">Find Restaurants</h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+        <div>
+          <label htmlFor="country" className="block text-sm font-medium text-gray-300 mb-1">
+            Country *
+          </label>
+          <select
+            id="country"
+            name="country"
+            required
+            value={searchData.country}
+            onChange={(e) => setSearchData({...searchData, country: e.target.value})}
+            className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+          >
+            <option value="">Select a country</option>
+            {countries.map((country) => (
+              <option key={country} value={country}>{country}</option>
+            ))}
+          </select>
         </div>
-      )}
+
+        <div>
+          <label htmlFor="city" className="block text-sm font-medium text-gray-300 mb-1">
+            City *
+          </label>
+          <input
+            type="text"
+            id="city"
+            name="city"
+            required
+            value={searchData.city}
+            onChange={(e) => setSearchData({...searchData, city: e.target.value})}
+            placeholder="Enter your city"
+            className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+          />
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white font-bold py-2 px-4 rounded transition-colors text-sm"
+      >
+        {loading ? 'Searching...' : 'Find Restaurants'}
+      </button>
+    </form>
+  </div>
+)}
+      
 
       {/* Signup Forms Section - Keep existing */}
       {!showSearch && (
