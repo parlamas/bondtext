@@ -17,7 +17,6 @@ export async function GET(request: NextRequest) {
     // Find the verification token
     const verificationToken = await prisma.verificationToken.findUnique({
       where: { token },
-      include: { customer: true },
     });
 
     if (!verificationToken) {
@@ -35,9 +34,21 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Find customer by email (identifier is the email)
+    const customer = await prisma.customer.findUnique({
+      where: { email: verificationToken.identifier },
+    });
+
+    if (!customer) {
+      return NextResponse.json(
+        { error: 'Customer not found' },
+        { status: 400 }
+      );
+    }
+
     // Update customer email verification status
     await prisma.customer.update({
-      where: { id: verificationToken.customerId },
+      where: { id: customer.id },
       data: { emailVerified: new Date() },
     });
 

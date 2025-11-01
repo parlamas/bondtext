@@ -1,5 +1,4 @@
 //src/app/api/auth/customer/reset-password/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
@@ -18,7 +17,6 @@ export async function POST(request: NextRequest) {
     // Find the reset token
     const resetToken = await prisma.passwordResetToken.findUnique({
       where: { token },
-      include: { customer: true },
     });
 
     if (!resetToken) {
@@ -36,12 +34,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Find customer by email (identifier)
+    const customer = await prisma.customer.findUnique({
+      where: { email: resetToken.identifier },
+    });
+
+    if (!customer) {
+      return NextResponse.json(
+        { error: 'Customer not found' },
+        { status: 400 }
+      );
+    }
+
     // Hash the new password
     const hashedPassword = await bcrypt.hash(password, 12);
 
     // Update customer password
     await prisma.customer.update({
-      where: { id: resetToken.customerId },
+      where: { id: customer.id },
       data: { password: hashedPassword },
     });
 
@@ -61,3 +71,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+

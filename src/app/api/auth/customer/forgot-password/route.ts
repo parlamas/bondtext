@@ -1,5 +1,4 @@
 //src/app/api/auth/customer/forgot-password/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { sendPasswordResetEmail } from '@/lib/email';
@@ -32,9 +31,14 @@ export async function POST(request: NextRequest) {
     const resetToken = generateToken();
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
-    // Store reset token
+    // Store reset token using identifier (email)
     await prisma.passwordResetToken.upsert({
-      where: { customerId: customer.id },
+      where: { 
+        identifier_token: {
+          identifier: customer.email,
+          token: resetToken,
+        }
+      },
       update: {
         token: resetToken,
         expires,
@@ -42,7 +46,7 @@ export async function POST(request: NextRequest) {
       create: {
         token: resetToken,
         expires,
-        customerId: customer.id,
+        identifier: customer.email,
       },
     });
 
@@ -60,3 +64,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
