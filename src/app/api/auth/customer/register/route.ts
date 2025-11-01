@@ -3,6 +3,8 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
+import { sendVerificationEmail } from '@/lib/email';
+import { generateToken } from '@/lib/customer-auth';
 
 export async function POST(request: Request) {
   try {
@@ -42,7 +44,7 @@ export async function POST(request: Request) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Create customer
+    // Create customer (without email verification)
     const customer = await prisma.customer.create({
       data: {
         fullName,
@@ -52,18 +54,35 @@ export async function POST(request: Request) {
         countryCode,
         ageRange,
         password: hashedPassword,
-        emailVerified: new Date(), // Auto-verify for now
+        // REMOVED: emailVerified: new Date() - Don't auto-verify
       },
     });
 
+    // Generate verification token
+    const verificationToken = generateToken();
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    // Store verification token
+    await prisma.verificationToken.create({
+      data: {
+        identifier: customer.email,
+        token: verificationToken,
+        expires,
+      },
+    });
+
+    // Send verification email
+    await sendVerificationEmail(customer.email, verificationToken, 'customer');
+
     return NextResponse.json({ 
-      message: 'Customer created successfully',
+      message: 'Registration successful! Please check your email for verification.',
       customer: {
         id: customer.id,
         fullName: customer.fullName,
         username: customer.username,
         email: customer.email
-      }
+      },
+      requiresVerification: true
     });
   } catch (error) {
     console.error('Customer registration error:', error);

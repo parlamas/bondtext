@@ -1,4 +1,4 @@
-// app/customer/signup/page.tsx
+//src/app/customer/signup/page.tsx
 
 'use client';
 
@@ -10,6 +10,8 @@ export default function CustomerSignup() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState('');
   const [formData, setFormData] = useState({
     fullName: '',
     username: '',
@@ -46,9 +48,16 @@ export default function CustomerSignup() {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccess(false);
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
       setLoading(false);
       return;
     }
@@ -73,7 +82,9 @@ export default function CustomerSignup() {
       const data = await response.json();
 
       if (response.ok) {
-        router.push('/customer/signin?message=Account created successfully');
+        setSuccess(true);
+        setRegisteredEmail(formData.email);
+        // Don't redirect - show success message with verification instructions
       } else {
         setError(data.error || 'Registration failed');
       }
@@ -91,6 +102,104 @@ export default function CustomerSignup() {
     });
   };
 
+  const resendVerification = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/auth/customer/resend-verification', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: registeredEmail }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccess(true);
+        setError(''); // Clear any previous errors
+      } else {
+        setError(data.error || 'Failed to resend verification email');
+      }
+    } catch (error) {
+      setError('Failed to resend verification email. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Success state - show verification instructions
+  if (success) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h2 className="text-3xl font-bold">Check Your Email!</h2>
+            <p className="text-gray-400 mt-2">We've sent a verification link to your email</p>
+          </div>
+
+          <div className="bg-gray-800 rounded-lg p-6 space-y-4">
+            <div className="text-center">
+              <p className="text-green-400 font-semibold">Registration Successful!</p>
+              <p className="text-gray-300 text-sm mt-2">
+                We've sent a verification link to <strong>{registeredEmail}</strong>
+              </p>
+            </div>
+
+            <div className="bg-blue-900/20 border border-blue-800 rounded-lg p-4">
+              <div className="flex items-start space-x-3">
+                <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div className="text-sm text-blue-300">
+                  <p><strong>Important:</strong> You must verify your email before you can sign in and book restaurants.</p>
+                  <p className="mt-1">Check your spam folder if you don't see the email within a few minutes.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <button
+                onClick={resendVerification}
+                disabled={loading}
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white font-bold py-3 px-4 rounded transition-colors"
+              >
+                {loading ? 'Sending...' : 'Resend Verification Email'}
+              </button>
+
+              <Link
+                href="/customer/signin"
+                className="block w-full bg-gray-600 hover:bg-gray-700 text-white text-center font-bold py-3 px-4 rounded transition-colors"
+              >
+                Go to Sign In
+              </Link>
+            </div>
+
+            {error && (
+              <div className="bg-red-900/20 border border-red-800 rounded-lg p-3">
+                <p className="text-red-400 text-sm">{error}</p>
+              </div>
+            )}
+          </div>
+
+          <div className="text-center text-gray-400 text-sm">
+            <p>Having trouble? <Link href="/contact" className="text-blue-400 hover:text-blue-300">Contact support</Link></p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Regular signup form
   return (
     <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -227,7 +336,7 @@ export default function CustomerSignup() {
                 value={formData.password}
                 onChange={handleChange}
                 className="mt-1 block w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                placeholder="Create a password"
+                placeholder="Create a password (min. 6 characters)"
               />
             </div>
 
