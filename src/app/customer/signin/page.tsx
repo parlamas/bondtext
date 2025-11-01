@@ -3,13 +3,11 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useCustomerAuth } from '@/context/CustomerAuthContext';
 
 export default function CustomerSignin() {
-  const router = useRouter();
-  const { login, checkCustomerSession } = useCustomerAuth();
+  const { login } = useCustomerAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
@@ -34,17 +32,15 @@ export default function CustomerSignin() {
       const data = await response.json();
 
       if (response.ok) {
-        console.log('Signin successful, updating context...');
+        console.log('Signin successful, forcing hard refresh...');
         
-        // Update the context with customer data
+        // Update context briefly (might show for a split second)
         login(data.customer);
         
-        // Wait a bit for the cookie to be set, then check session
-        setTimeout(async () => {
-          await checkCustomerSession();
-          console.log('Session check completed, redirecting...');
-          router.push('/');
-        }, 500);
+        // Force a complete page reload to ensure session is loaded
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 100);
       } else {
         setError(data.error || 'Sign in failed');
       }

@@ -37,7 +37,7 @@ export default function NavBar() {
             {/* CUSTOMER INFO - Shows on LEFT side when signed in */}
             {customer && (
               <div className="flex items-center space-x-2 ml-4">
-                <span className="text-green-400 text-sm font-medium">
+                <span className="text-green-400 text-sm font-medium bg-green-900/30 px-3 py-1 rounded">
                   👤 {customer.username}
                 </span>
               </div>
@@ -50,13 +50,13 @@ export default function NavBar() {
               // Signed in restaurant owner - shows on RIGHT side
               <div className="flex items-center space-x-4">
                 <span className="text-gray-300 text-sm">
-                  🏪 Restaurant: {session.user?.username || session.user?.name || session.user?.email}
+                  🏪 {session.user?.username || session.user?.name || session.user?.email}
                 </span>
                 <button
                   onClick={handleRestaurantLogout}
                   className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm transition-colors"
                 >
-                  Restaurant Sign Out
+                  Sign Out
                 </button>
               </div>
             ) : customer ? (
@@ -66,7 +66,7 @@ export default function NavBar() {
                   onClick={handleCustomerLogout}
                   className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm transition-colors"
                 >
-                  Customer Sign Out
+                  Sign Out
                 </button>
               </div>
             ) : (

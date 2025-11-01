@@ -14,15 +14,15 @@ export async function createCustomerSession(customerId: string) {
 
   cookieStore.set('customer_session', sessionToken, {
     httpOnly: true,
-    secure: isProduction, // true in production, false in development
+    secure: isProduction,
     sameSite: 'lax',
     maxAge: 60 * 60 * 24 * 7, // 1 week
     path: '/',
-    domain: domain, // Set domain for production
+    domain: domain,
   });
 
   console.log('SESSION CREATED - Customer ID:', customerId);
-  console.log('SESSION CREATED - Domain:', domain);
+  console.log('SESSION CREATED - Token:', sessionToken);
 
   return sessionToken;
 }
@@ -32,23 +32,35 @@ export async function getCustomerSession() {
     const cookieStore = cookies();
     const sessionToken = cookieStore.get('customer_session')?.value;
 
+    console.log('GET SESSION - Raw cookie value:', sessionToken);
+
     if (!sessionToken) {
-      console.log('No customer_session cookie found');
+      console.log('GET SESSION - No cookie found');
       return null;
     }
 
     const decoded = Buffer.from(sessionToken, 'base64').toString();
-    const [customerId] = decoded.split(':');
+    console.log('GET SESSION - Decoded:', decoded);
+    
+    const [customerId, timestamp] = decoded.split(':');
+    console.log('GET SESSION - Customer ID:', customerId);
+    console.log('GET SESSION - Timestamp:', timestamp);
 
     if (!customerId) {
-      console.log('Invalid session token - no customer ID');
+      console.log('GET SESSION - No customer ID in token');
       return null;
     }
 
-    console.log('SESSION FOUND - Customer ID:', customerId);
+    // Validate that customerId is a valid Prisma ID format
+    if (!customerId.startsWith('cmhg')) {
+      console.log('GET SESSION - Invalid customer ID format:', customerId);
+      return null;
+    }
+
+    console.log('GET SESSION - Valid session found for customer:', customerId);
     return { customerId };
   } catch (error) {
-    console.error('Error getting customer session:', error);
+    console.error('GET SESSION - Error:', error);
     return null;
   }
 }
