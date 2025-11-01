@@ -8,17 +8,21 @@ export async function createCustomerSession(customerId: string) {
 
   const sessionToken = Buffer.from(`${customerId}:${Date.now()}`).toString('base64');
 
-  // More permissive cookie settings for testing
+  // Get the domain for production
+  const isProduction = process.env.NODE_ENV === 'production';
+  const domain = isProduction ? '.bondtext.com' : undefined;
+
   cookieStore.set('customer_session', sessionToken, {
     httpOnly: true,
-    secure: false, // Set to false for testing, true in production
+    secure: isProduction, // true in production, false in development
     sameSite: 'lax',
     maxAge: 60 * 60 * 24 * 7, // 1 week
     path: '/',
+    domain: domain, // Set domain for production
   });
 
   console.log('SESSION CREATED - Customer ID:', customerId);
-  console.log('SESSION CREATED - Cookie set with maxAge:', 60 * 60 * 24 * 7);
+  console.log('SESSION CREATED - Domain:', domain);
 
   return sessionToken;
 }
@@ -29,6 +33,7 @@ export async function getCustomerSession() {
     const sessionToken = cookieStore.get('customer_session')?.value;
 
     if (!sessionToken) {
+      console.log('No customer_session cookie found');
       return null;
     }
 
@@ -36,9 +41,11 @@ export async function getCustomerSession() {
     const [customerId] = decoded.split(':');
 
     if (!customerId) {
+      console.log('Invalid session token - no customer ID');
       return null;
     }
 
+    console.log('SESSION FOUND - Customer ID:', customerId);
     return { customerId };
   } catch (error) {
     console.error('Error getting customer session:', error);
