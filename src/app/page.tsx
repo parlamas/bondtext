@@ -155,7 +155,7 @@ export default function HomePage() {
               
               <div className="space-y-3">
                 <div className="text-sm text-gray-300 space-y-1">
-                  <p>✓ Pre-order from restaurant menus</p>
+                  <p>✓ Pre-order and pre-pay from restaurant menu</p>
                   <p>✓ Enjoy exclusive discounts</p>
                   <p>✓ Secure prepayment</p>
                   <p>✓ Easy booking process</p>

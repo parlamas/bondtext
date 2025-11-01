@@ -12,13 +12,19 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export async function sendVerificationEmail(email: string, token: string) {
-  const verificationUrl = `${process.env.NEXTAUTH_URL}/auth/verify-email?token=${token}`;
+export async function sendVerificationEmail(email: string, token: string, userType: 'customer' | 'restaurant' = 'restaurant') {
+  const verificationUrl = userType === 'customer' 
+    ? `${process.env.NEXTAUTH_URL}/customer/verify-email?token=${token}`
+    : `${process.env.NEXTAUTH_URL}/auth/verify-email?token=${token}`;
+
+  const subject = userType === 'customer' 
+    ? 'Verify your BondText Customer Account'
+    : 'Verify your BondText Restaurant Account';
 
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to: email,
-    subject: 'Verify your BondText account',
+    subject: subject,
     html: `
       <div>
         <h2>Welcome to BondText!</h2>
@@ -39,13 +45,19 @@ export async function sendVerificationEmail(email: string, token: string) {
   });
 }
 
-export async function sendPasswordResetEmail(email: string, token: string) {
-  const resetUrl = `${process.env.NEXTAUTH_URL}/auth/reset-password?token=${token}`;
+export async function sendPasswordResetEmail(email: string, token: string, userType: 'customer' | 'restaurant' = 'restaurant') {
+  const resetUrl = userType === 'customer'
+    ? `${process.env.NEXTAUTH_URL}/customer/reset-password?token=${token}`
+    : `${process.env.NEXTAUTH_URL}/auth/reset-password?token=${token}`;
+
+  const subject = userType === 'customer'
+    ? 'Reset your BondText Customer Password'
+    : 'Reset your BondText Restaurant Password';
 
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to: email,
-    subject: 'Reset your BondText password',
+    subject: subject,
     html: `
       <div>
         <h2>Password Reset Request</h2>
@@ -66,3 +78,4 @@ export async function sendPasswordResetEmail(email: string, token: string) {
     `,
   });
 }
+
