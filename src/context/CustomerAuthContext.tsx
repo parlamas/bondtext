@@ -16,7 +16,6 @@ interface CustomerAuthContextType {
   isLoading: boolean;
   login: (customer: Customer) => void;
   logout: () => void;
-  checkCustomerSession: () => Promise<void>;
 }
 
 const CustomerAuthContext = createContext<CustomerAuthContextType | undefined>(undefined);
@@ -25,45 +24,50 @@ export function CustomerAuthProvider({ children }: { children: ReactNode }) {
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const checkCustomerSession = async () => {
-    try {
-      console.log('Checking customer session...');
-      const response = await fetch('/api/auth/customer/session', {
-        cache: 'no-store', // Prevent caching
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Session check successful:', data.customer);
-        setCustomer(data.customer);
-      } else {
-        console.log('Session check failed:', response.status);
-        setCustomer(null);
-      }
-    } catch (error) {
-      console.error('Error checking customer session:', error);
-      setCustomer(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+  // Load customer from localStorage on initial load
   useEffect(() => {
-    checkCustomerSession();
+    const loadCustomerFromStorage = () => {
+      try {
+        if (typeof window !== 'undefined') {
+          const storedCustomer = localStorage.getItem('bondtext_customer');
+          if (storedCustomer) {
+            const customerData = JSON.parse(storedCustomer);
+            setCustomer(customerData);
+            console.log('✅ Loaded customer from localStorage:', customerData.username);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading customer from localStorage:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadCustomerFromStorage();
   }, []);
 
   const login = (customerData: Customer) => {
-    console.log('Login called with:', customerData);
-    setCustomer(customerData);
+    try {
+      if (typeof window !== 'undefined') {
+        // Store in localStorage for persistence
+        localStorage.setItem('bondtext_customer', JSON.stringify(customerData));
+        setCustomer(customerData);
+        console.log('✅ Customer logged in and stored:', customerData.username);
+      }
+    } catch (error) {
+      console.error('Error storing customer in localStorage:', error);
+    }
   };
 
-  const logout = async () => {
+  const logout = () => {
     try {
-      await fetch('/api/auth/customer/signout', { method: 'POST' });
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('bondtext_customer');
+        setCustomer(null);
+        console.log('✅ Customer logged out');
+      }
     } catch (error) {
-      console.error('Error during logout:', error);
-    } finally {
-      setCustomer(null);
+      console.error('Error removing customer from localStorage:', error);
     }
   };
 
@@ -72,8 +76,7 @@ export function CustomerAuthProvider({ children }: { children: ReactNode }) {
       customer, 
       isLoading, 
       login, 
-      logout,
-      checkCustomerSession 
+      logout
     }}>
       {children}
     </CustomerAuthContext.Provider>

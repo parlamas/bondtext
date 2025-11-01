@@ -3,10 +3,12 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useCustomerAuth } from '@/context/CustomerAuthContext';
 
 export default function CustomerSignin() {
+  const router = useRouter();
   const { login } = useCustomerAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -32,15 +34,13 @@ export default function CustomerSignin() {
       const data = await response.json();
 
       if (response.ok) {
-        console.log('Signin successful, forcing hard refresh...');
+        console.log('✅ Signin successful, storing customer in localStorage...');
         
-        // Update context briefly (might show for a split second)
+        // Store customer in context (which saves to localStorage)
         login(data.customer);
         
-        // Force a complete page reload to ensure session is loaded
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 100);
+        // Simple redirect - localStorage will persist the session
+        router.push('/');
       } else {
         setError(data.error || 'Sign in failed');
       }

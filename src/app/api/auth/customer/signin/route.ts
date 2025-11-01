@@ -3,7 +3,6 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
-import { createCustomerSession } from '@/lib/customer-auth';
 
 export async function POST(request: Request) {
   try {
@@ -46,11 +45,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create customer session
-    console.log('SIGNIN - Creating session for customer:', customer.id, customer.username);
-    await createCustomerSession(customer.id);
-    console.log('SIGNIN - Session created successfully');
-
+    // Return customer data (frontend will handle storage in localStorage)
     return NextResponse.json({
       message: 'Sign in successful',
       customer: {
